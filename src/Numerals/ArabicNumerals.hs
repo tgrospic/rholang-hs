@@ -14,4 +14,4 @@ class ArabicNumeralsSymantics n where
   eight :: n
   nine  :: n
   (#)   :: n -> n -> n
-  add   :: n -> n -> n
+  (.+)  :: n -> n -> n
