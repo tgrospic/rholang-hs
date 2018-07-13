@@ -71,11 +71,11 @@ pplus = arabicParser `chainl1` do{ char '+' <* __; pure (.+) }
 arabicParser :: ArabicParser p
 arabicParser = parens pplus <|> spaced pdigits
 
-run :: Parser a -> String -> a
-run p inp = res $ parse p "" inp
+run :: Parser a -> String -> Either String a
+run p inp = res $ parse p "" ("(" ++ inp ++ ")")
   where
-  res (Left ex) = error "Parse error"
-  res (Right res) = res
+  res (Left ex) = Left $ show ex
+  res (Right a) = Right a
 
 -- result = "(((2+4)+52)+342)"
-result = show4 $ run arabicParser "( 2 + 4 +52+(342) )"
+result = either id show4 $ run arabicParser "( 2 + 4 +52+(342) )"

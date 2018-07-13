@@ -25,6 +25,7 @@ dependencies:
 - digits
 - containers
 - parsec
+- readline
 
 library:
   source-dirs: src
