@@ -1,17 +1,17 @@
 module Main where
 
 import System.Environment
-import RhoImpl
+import Control.Monad
 import Data.List
+import RhoImpl
 import Numerals.ArabicNumeralsImpl
 import Numerals.ArabicNumeralsRepl
-import Control.Monad
 
 main :: IO ()
 main = do
   args <- getArgs
 
-  putStrLn $ (++"\n") =<< testNumeralsEq
+  putStrLn $ testNumeralsEq >>= (++"\n")
 
   -- Start repl
   case find (=="--repl") args of

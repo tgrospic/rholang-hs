@@ -77,5 +77,5 @@ run p inp = res $ parse p "" ("(" ++ inp ++ ")")
   res (Left ex) = Left $ show ex
   res (Right a) = Right a
 
--- result = "(((2+4)+52)+342)"
-result = either id show4 $ run arabicParser "( 2 + 4 +52+(342) )"
+-- result = "(2+4+5+6+9)"
+result = either id show4 $ run arabicParser "( 2 + 4 + 5+(6+9))"
