@@ -3,7 +3,6 @@ module Main where
 import System.Environment
 import Control.Monad
 import Data.List
-import RhoImpl
 import Numerals.ArabicNumeralsImpl
 import Numerals.ArabicNumeralsRepl
 
