@@ -101,14 +101,14 @@ toBits x = [1] ++ l
 
 -- substitution example
 
-n1 = quo nil :: Name
-n3 = quo (eval (quo (eval(n1))))
+n0 = quo nil :: Name
+n2 = quo $ eval $ quo $ eval n0
 
-p1 = eval n3 .| nil :: Process
+p1 = eval n2 .| nil :: Process
 
-p2 = for n1 n3 p1
+p2 = for n0 n2 p1
 
-p3 = for n3 n1 p1
+p3 = for n2 n0 p1
 
 {-
 
