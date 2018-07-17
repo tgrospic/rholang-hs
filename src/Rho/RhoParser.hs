@@ -1,4 +1,4 @@
-module RhoParser where
+module Rho.RhoParser where
 
 import Control.Applicative (many, some, (<|>))
 import Control.Monad (replicateM)
