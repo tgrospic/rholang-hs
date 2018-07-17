@@ -23,32 +23,32 @@ class NameSymantics n where
   -- @P // name or quoted process
   quo :: TProcess n -> n
 
-data Process a
+data Process
   = Stop
-  | Input  (Name a)    (Name a)    (Process a)
-  | Output (Name a)    (Process a)
-  | Par    (Process a) (Process a)
-  | Eval   (Name a)
+  | Input  Name    Name    Process
+  | Output Name    Process
+  | Par    Process Process
+  | Eval   Name
   deriving (Eq, Show)
 
-data Name a = Name (Process a)
+data Name = Name Process
             | Address Int
             deriving (Eq, Show)
 
-instance ProcessSymantics (Process a) where
-  type TName (Process a) = Name a
+instance ProcessSymantics Process where
+  type TName Process = Name
   nil  = Stop
   for  = Input
   out  = Output
   (.|) = Par
   eval = Eval
 
-instance NameSymantics (Name a) where
-  type TProcess (Name a) = Process a
+instance NameSymantics Name where
+  type TProcess Name = Process
   quo  = Name
 
 -- https://github.com/AkbarsGrasp/RhoMachine/blob/9ac6b0af08d6272638314eb9d850392996f2ef8f/RhoCalc.lhs#L119
-substitute :: Name a -> Name a -> Process a -> Process a
+substitute :: Name -> Name -> Process -> Process
 substitute y x Stop = Stop
 substitute y x (Input a b q) = Input a' b' q'
   where a'  = if a == x then y else a
@@ -65,7 +65,7 @@ substitute y x (Eval a) = Eval a'
   where a' = if a == x then y else a
 
 -- https://github.com/AkbarsGrasp/RhoMachine/blob/9ac6b0af08d6272638314eb9d850392996f2ef8f/RhoCalc.lhs#L135
-deBruijnify :: Process a -> Int -> Int -> Int -> Process a
+deBruijnify :: Process -> Int -> Int -> Int -> Process
 deBruijnify Stop l w h = Stop
 deBruijnify (Input (Name px) y q) l w h = Input x dbny q''
   where q''    = substitute dbny y q'
@@ -101,10 +101,10 @@ toBits x = [1] ++ l
 
 -- substitution example
 
-n1 = quo nil :: Name ()
+n1 = quo nil :: Name
 n3 = quo (eval (quo (eval(n1))))
 
-p1 = eval n3 .| nil :: Process ()
+p1 = eval n3 .| nil :: Process
 
 p2 = for n1 n3 p1
 
