@@ -11,7 +11,7 @@ class ProcessSymantics p where
   nil  :: p
   -- for( y <- x ) P // input guarded process
   for  :: TName p -> TName p -> p -> p
-  -- x!( @Q ) // output
+  -- x!( Q ) // output
   out  :: TName p -> p -> p
   -- P|Q // parallel composition
   (.|) :: p -> p -> p
