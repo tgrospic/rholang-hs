@@ -29,7 +29,7 @@ class ProcessSymantics p where
 
 class NameSymantics n where
   -- @P // name or quoted process
-  quo :: (TContext n, TProcess n) -> n
+  quo :: TContext n -> TProcess n -> n
 
 class ContextSymantics k where
   -- []
@@ -51,7 +51,7 @@ data Process
   | Comm   Context
   deriving (Eq, Show)
 
-data Name = Name (Context, Process)
+data Name = Name Context Process
             | Address Int
             deriving (Eq, Show)
 
@@ -81,10 +81,42 @@ instance ProcessSymantics Process where
   comm   = Comm
 
 instance NameSymantics Name where
-  quo  = Name
+  quo = Name
 
 instance ContextSymantics Context where
   hole = Hole
   forK = InputK
   outK = OutputK
   parK = ParK
+
+substitute :: Name -> Name -> Process -> Process
+substitute y x Stop = Stop
+substitute y x (Input a b q) = Input a' b' q'
+  where a'  = if a == x then y else a
+        b'  = if b == x then Name Hole (Par (Eval b) q) else b
+        q'  = substitute y x q''
+        q'' = if b == x then substitute b' b q else q
+substitute y x (Output a q) = Output a' q'
+  where a' = if a == x then y else a
+        q' = substitute y x q
+substitute y x (Par p q) = Par p' q'
+  where p' = substitute y x p
+        q' = substitute y x q
+substitute y x (Eval a) = Eval a'
+  where a' = if a == x then y else a
+substitute y x (Update a) = Update a'
+  where a' = if a == x then y else a
+substitute y x (Comm a) = Comm $ substituteK y x a
+
+substituteK :: Name -> Name -> Context -> Context
+substituteK y x Hole = Hole
+substituteK y x (InputK a b q) = InputK a' b' q'
+  where a'  = if a == x then y else a
+        b'  = if b == x then Name Hole (Par (Comm q) (Eval b)) else b
+        q'  = substituteK y x q''
+        q'' = if b == x then substituteK b' b q else q
+substituteK y x (OutputK a q) = OutputK a' q'
+  where a' = if a == x then y else a
+        q' = substituteK y x q
+substituteK y x (ParK p q) = ParK p q'
+  where q' = substituteK y x q
