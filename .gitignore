@@ -1,3 +1,6 @@
-.stack-work/
-rholang-hs.cabal
 *~
+.stack-work/
+stack.yaml
+rholang-hs.cabal
+/dist*
+.ghc.environment*

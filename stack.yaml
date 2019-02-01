@@ -1,7 +1,8 @@
-resolver: lts-11.13
+resolver: lts-12.14
 
 packages:
 - .
 
 extra-deps:
+- multiset-0.3.4.1
 - readline-1.0.3.0
