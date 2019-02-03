@@ -1,4 +1,4 @@
-module Rholang1a.Syntax where
+module Rholang2.Syntax where
 
 import Control.Applicative (many, some, (<|>), liftA2)
 import Data.Functor.Identity (Identity)
@@ -7,7 +7,10 @@ import Text.Parsec.Combinator (between, sepBy, sepBy1, choice, chainl1)
 import Text.Parsec.Language (javaStyle)
 import Text.Parsec.String (Parser)
 import qualified Text.Parsec.Token as P
-import Rholang1a.RhoFinal
+import Rholang2.RhoFinal
+import Rholang2.RhoInitial
+import Rholang2.Semantics
+import Rholang2.Print
 
 -- Syntax
 
@@ -28,29 +31,29 @@ var :: Parser String
 var = (:) <$> (letter <|> char '\'') <*> many varChar
   <|> (:) <$>             char '_'   <*> some varChar
 
-pNil :: ProcessSymantics p => Parser p
+pNil :: Parser Process
 pNil = nil <$ string "Nil"
 
-pTrue :: ProcessSymantics p => Parser p
-pTrue = (eval $ lit (LBool True)) <$ string "true"
+pTrue :: Parser Process
+pTrue = (eval $ GndP $ GBool True) <$ string "true"
 
-pFalse :: ProcessSymantics p => Parser p
-pFalse = (eval $ lit (LBool False)) <$ string "false"
+pFalse :: Parser Process
+pFalse = (eval $ GndP $ GBool False) <$ string "false"
 
-pString :: ProcessSymantics p => Parser p
-pString = eval . lit . LString <$> P.stringLiteral tokenParser
+pString :: Parser Process
+pString = eval . GndP . GString <$> P.stringLiteral tokenParser
 
-pInt :: ProcessSymantics p => Parser p
-pInt = eval . lit . LInt <$> P.integer tokenParser
+pInt :: Parser Process
+pInt = eval . GndP . GInt <$> P.integer tokenParser
 
-pVarName :: NameSymantics n => Parser n
-pVarName = lit . LVar <$> var
+pVarName :: Parser Name
+pVarName = VarName <$> var
 
-pVarProc  :: ProcessSymantics p => Parser p
-pVarProc = eval <$> pVarName
+pVarProc  :: Parser Process
+pVarProc = eval . VarProc <$> var
 
--- Inputs
-pFor :: ProcessSymantics p => Parser p
+-- Input
+pFor :: Parser Process
 pFor = do
   _ <- string "for" *> __ *> char '('
   y <- __ *> pName
@@ -60,31 +63,29 @@ pFor = do
   p <- __ *> char '{' *> pPar <* char '}'
   pure $ for y x p
 
--- Outputs
-pOut :: ProcessSymantics p => Parser p
+-- Output
+pOut :: Parser Process
 pOut = do
   n <- pName <* __ <* char '!'
   p <- __ *> char '(' *> pPar <* char ')'
   pure $ out n p
 
 -- Name
-pName :: NameSymantics n => Parser n
-pName = try (quo <$> (char '@' *> pVarProc)) <|> try (quo <$> (char '@' *> pPar)) <|> pVarName
--- This does not compile, if defined in where block ??
--- pName = try quotedVar <|> try quotedProc <|> variable
---   where
---     quotedVar  = quo <$> (char '@' *> pVarProc)
---     quotedProc = quo <$> (char '@' *> pPar)
---     variable   = lit <$> pVarName
+pName :: Parser Name
+pName = try quotedVar <|> try quotedProc <|> variable
+  where
+    quotedVar  = quo <$> (char '@' *> pVarProc)
+    quotedProc = quo <$> (char '@' *> pPar)
+    variable   = pVarName
 
 -- Dereference
-pEval :: ProcessSymantics p => Parser p
+pEval :: Parser Process
 pEval = eval <$> (char '*' *> pName)
 
 -- Process
-pProc1, pProc2, pProc3, pProc4, pProc :: ProcessSymantics p => Parser p
+pProc1, pProc2, pProc3, pProc4, pProc :: Parser Process
 pProc1 = pString <|> pInt <|> pNil <|> pFalse <|> pTrue
-pProc2 = pEval <|> try pProc1 <|> try pOut <|> pFor <|> try pOut <|> pVarProc
+pProc2 = pEval <|> try pProc1 <|> try pOut <|> pFor <|> pVarProc
 
 pProc3 = __ *> pProc2 <* __
 pProc4 = __ *> char '{' *> pPar <* char '}' <* __
@@ -92,12 +93,15 @@ pProc4 = __ *> char '{' *> pPar <* char '}' <* __
 pProc = try pProc3 <|> pProc4
 
 -- Rho parser
-pPar :: ProcessSymantics p => Parser p
+pPar :: Parser Process
 pPar = pProc `chainl1` (char '|' *> pure (.|))
 
+rhoParse :: Parser a -> String -> Either ParseError a
+rhoParse p = parse p ""
 
-run :: Parser a -> String -> Either String a
-run p inp = res $ parse p "" inp
+run :: Parser a -> String -> a
+run p inp = res $ rhoParse p inp
   where
-  res (Left ex) = Left $ show ex
-  res (Right a) = Right a
+  res (Left ex) = error $ show ex
+  res (Right a) = a
+

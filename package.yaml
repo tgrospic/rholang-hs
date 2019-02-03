@@ -25,7 +25,7 @@ dependencies:
 - digits
 - containers
 - parsec
-- readline
+- haskeline
 
 library:
   source-dirs: src
@@ -41,13 +41,13 @@ executables:
     dependencies:
     - rholang-hs
 
-tests:
-  rholang-hs-test:
-    main:                Spec.hs
-    source-dirs:         test
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - rholang-hs
+# tests:
+#   rholang-hs-test:
+#     main:                Spec.hs
+#     source-dirs:         test
+#     ghc-options:
+#     - -threaded
+#     - -rtsopts
+#     - -with-rtsopts=-N
+#     dependencies:
+#     - rholang-hs
