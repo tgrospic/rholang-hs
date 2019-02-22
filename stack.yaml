@@ -5,4 +5,3 @@ packages:
 
 extra-deps:
 - multiset-0.3.4.1
-- readline-1.0.3.0

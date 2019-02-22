@@ -4,7 +4,8 @@ module RholangRepl
 
 import System.Console.Haskeline
 import System.Console.Haskeline.History
-import Rholang2.Syntax
+import Rholang3.Syntax
+import Rholang3.Semantics
 
 repl :: InputT IO ()
 repl = do
@@ -19,5 +20,6 @@ repl = do
       case rhoParse pPar line of
         Left error -> outputStrLn $ show error
         Right exp  ->
-          outputStrLn $ "Parsed:\n\n" ++ show exp <> "\n"
+          let parsed = new ["stdout", "stderr"] exp in
+          outputStrLn $ "Parsed:\n\n" ++ show parsed <> "\n"
       repl

@@ -1,14 +1,24 @@
 # Rholang in Haskell
 
-## Rholang1
+## Rholang3
 
-Rholang implementation in `Rholang1` folder uses collection the same as in [Jake's example](https://gist.github.com/Jake-Gillberg/d3b686f17df530395ac296810fcc1463).
+This implementation does not using records. Height is _not_ stored in the collection structure as before. Also the code is simpler, alpha equivalence (syntax erasure) is not mixed with substitution.  
+A new thing is the starting point for `new` term that creates new names and also the way to make side-effects.  
+Repl new simulates as the term is executed inside `new stdout, stderr in { <repl_term> }`. The real output is the next goal but not before reductions (comms). Looking forward to hear [Isaac's](https://github.com/Isaac-DeFrain/KFramework) implementation and explanation in K Framework.
 
-Substitution is still not working in every case and there is no distinction between Process and Name variables which may be undesirable.
+```sh
+stack build
 
-## Rholang1a
+stack run -- -- repl # cabal new-run . repl
 
-`Rholang1a` is attempt to generalize parser so it does not depends on concrete structure. It compiles successfully with `UndecidableSuperClasses` but infinite cycles with Process and Name types blows up in runtime.
+# `out` is free, but `stdout` is bound created with `new`
+rholang $ for( a <- @42 ) { stdout!(*a) | out!(*a) }
+Parsed:
+
+for( x2 <- @{42} ) {
+  x0!(*x2) | out!(*x2)
+}
+```
 
 ## Rholang2
 
@@ -32,12 +42,12 @@ for( x1 <- @{42} ) {
 }
 ```
 
-## Arabic numerals repl
+## Rholang1a
 
-```sh
-stack run -- -- repl-num
+`Rholang1a` is attempt to generalize parser so it does not depends on concrete structure. It compiles successfully with `UndecidableSuperClasses` but infinite cycles with Process and Name types blows up in runtime.
 
-% ( 22 + ( 3 + 4)+5+66)
-Parsed exp.:    ((((3+4)+22)+5)+66)
-Evaluated exp.: 100
-```
+## Rholang1
+
+Rholang implementation in `Rholang1` folder uses collection the same as in [Jake's example](https://gist.github.com/Jake-Gillberg/d3b686f17df530395ac296810fcc1463).
+
+Substitution is still not working in every case and there is no distinction between Process and Name variables which may be undesirable.
