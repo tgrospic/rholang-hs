@@ -1,8 +1,8 @@
-module Numerals.ArabicNumerals
-  ( ArabicNumeralsSymantics (..)
+module Numerals1.ArabicNumerals
+  ( ArabicNumerals1Symantics (..)
   ) where
 
-class ArabicNumeralsSymantics n where
+class ArabicNumerals1Symantics n where
   zero  :: n
   one   :: n
   two   :: n

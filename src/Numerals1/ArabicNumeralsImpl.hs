@@ -1,13 +1,13 @@
-module Numerals.ArabicNumeralsImpl
+module Numerals1.ArabicNumeralsImpl
   ( eval1, isStructEq1, isEq1
   , AN (..), eval2, isStructEq2, isEq2
   , AN3 (..), eval3, isStructEq3, isEq3, show3
   , AN4 (..), eval4, isStructEq4, isEq4, show4
-  , testNumeralsEq
+  , testNumerals1Eq
   , toNum
   ) where
 
-import Numerals.ArabicNumerals
+import Numerals1.ArabicNumerals
 import Control.Monad
 import Data.Digits
 import Data.List (intercalate)
@@ -21,7 +21,7 @@ toNum xs = unDigits 10 $ digitsZeroFix =<< xs
 
 -- Shallow embedding directly to Int
 
-instance ArabicNumeralsSymantics Int where
+instance ArabicNumerals1Symantics Int where
   zero    = 0
   one     = 1
   two     = 2
@@ -51,7 +51,7 @@ isEq1 a b = eval1 a == eval1 b
 
 newtype AN = AN [Int] deriving (Eq, Show)
 
-instance ArabicNumeralsSymantics AN where
+instance ArabicNumerals1Symantics AN where
   zero          = AN [0]
   one           = AN [1]
   two           = AN [2]
@@ -81,7 +81,7 @@ newtype AN3 = AN3 [Op3] deriving (Eq, Show)
 
 data Op3 = Plus [Op3] [Op3] | Dig Int deriving (Eq, Ord, Show)
 
-instance ArabicNumeralsSymantics AN3 where
+instance ArabicNumerals1Symantics AN3 where
   zero                = AN3 [Dig 0]
   one                 = AN3 [Dig 1]
   two                 = AN3 [Dig 2]
@@ -129,7 +129,7 @@ newtype AN4 = AN4 [Op4] deriving (Eq, Show)
 
 data Op4 = Addition (MultiSet [Op4]) | Digit Int deriving (Eq, Ord, Show)
 
-instance ArabicNumeralsSymantics AN4 where
+instance ArabicNumerals1Symantics AN4 where
   zero                  = AN4 [Digit 0]
   one                   = AN4 [Digit 1]
   two                   = AN4 [Digit 2]
@@ -179,7 +179,7 @@ show4 (AN4 xs) = showOps xs
 Structural equivalence and operational semantics with different implementation structures
 
 -}
-testNumeralsEq = [
+testNumerals1Eq = [
     "> two .+ three `isEq1` (zero # five)", e1 isEq1,
     "> two .+ three `isEq2` (zero # five)", e1 isEq2,
     "> two .+ three `isEq3` (zero # five)", e1 isEq3,

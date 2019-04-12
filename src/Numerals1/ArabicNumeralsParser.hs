@@ -1,6 +1,6 @@
 {-# LANGUAGE RankNTypes #-}
 
-module Numerals.ArabicNumeralsParser
+module Numerals1.ArabicNumeralsParser
   (
     pdigits
   , pplus
@@ -17,10 +17,10 @@ import Text.Parsec.Language (haskellDef)
 import Text.Parsec.String (Parser)
 import Text.Parsec.Token (GenTokenParser, makeTokenParser, natural)
 import Text.Parsec.Combinator (between, sepBy, sepBy1, choice, chainl1)
-import Numerals.ArabicNumerals
-import Numerals.ArabicNumeralsImpl
+import Numerals1.ArabicNumerals
+import Numerals1.ArabicNumeralsImpl
 
-type ArabicParser p = ArabicNumeralsSymantics p => Parser p
+type ArabicParser p = ArabicNumerals1Symantics p => Parser p
 
 __ = many $ char ' '
 

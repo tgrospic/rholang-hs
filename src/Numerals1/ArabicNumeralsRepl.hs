@@ -1,11 +1,11 @@
-module Numerals.ArabicNumeralsRepl
+module Numerals1.ArabicNumeralsRepl
   ( repl
   ) where
 
 import System.Console.Haskeline
 import System.Console.Haskeline.History
-import Numerals.ArabicNumeralsImpl
-import Numerals.ArabicNumeralsParser
+import Numerals1.ArabicNumeralsImpl
+import Numerals1.ArabicNumeralsParser
 
 repl :: InputT IO ()
 repl = do
