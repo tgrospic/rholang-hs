@@ -25,12 +25,21 @@ class NameSymantics n where
 -- Variable symantics
 class VariableSymantics n where
   -- Variable (name/process)
-  nvar   :: String -> n N
-  pvar   :: String -> n P
+  nVar   :: String -> n N
+  pVar   :: String -> n P
 
 -- Ground terms
 class GroundNameSymantics n where
-  gint  :: Integer -> n N
-  gstr  :: String  -> n N
-  gbool :: Bool    -> n N
-  guri  :: String  -> n N
+  gInt  :: Integer -> n N
+  gStr  :: String  -> n N
+  gBool :: Bool    -> n N
+  gUri  :: String  -> n N
+
+-- Rholang - rho-calc with variables and ground terms
+class
+  ( ProcessSymantics a
+  , NameSymantics a
+  , VariableSymantics a
+  , GroundNameSymantics a
+  )
+  => RholangSymantics a

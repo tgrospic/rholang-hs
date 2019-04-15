@@ -4,7 +4,7 @@ module Rholang5.Syntax where
 
 import Control.Applicative (many, some, (<|>), liftA2)
 import Data.Functor.Identity (Identity)
-import Text.Parsec (Parsec, ParseError, anyChar, letter, digit, char, string, parse, try)
+import Text.Parsec (Parsec, ParseError, anyChar, letter, digit, char, string, parse, try, eof)
 import Text.Parsec.Combinator (between, sepBy, sepBy1, choice, chainl1)
 import Text.Parsec.Language (javaStyle)
 import Text.Parsec.String (Parser)
@@ -30,33 +30,28 @@ var :: Parser String
 var = (:) <$> (letter <|> char '\'') <*> many varChar
   <|> (:) <$>             char '_'   <*> some varChar
 
-type RholangParser b a = (
-  ProcessSymantics a,
-  NameSymantics a,
-  VariableSymantics a,
-  GroundNameSymantics a
-  ) => Parser (a b)
+type RholangParser b a = (RholangSymantics a) => Parser (a b)
 
 pNil :: RholangParser P a
 pNil = nil <$ string "Nil"
 
 pTrue :: RholangParser P a
-pTrue = eval (gbool True) <$ string "true"
+pTrue = eval (gBool True) <$ string "true"
 
 pFalse :: RholangParser P a
-pFalse = eval (gbool False) <$ string "false"
+pFalse = eval (gBool False) <$ string "false"
 
 pString :: RholangParser P a
-pString = eval . gstr <$> P.stringLiteral tokenParser
+pString = eval . gStr <$> P.stringLiteral tokenParser
 
 pInt :: RholangParser P a
-pInt = eval . gint <$> P.integer tokenParser
+pInt = eval . gInt <$> P.integer tokenParser
 
 pVarName :: RholangParser N a
-pVarName = nvar <$> var
+pVarName = nVar <$> var
 
 pVarProc  :: RholangParser P a
-pVarProc = pvar <$> var
+pVarProc = pVar <$> var
 
 -- Input
 pFor :: RholangParser P a
@@ -101,11 +96,11 @@ pProc = try pProc3 <|> pProc4
 pPar :: RholangParser P a
 pPar = pProc `chainl1` (char '|' *> pure par)
 
-rhoParse :: Parser a -> String -> Either ParseError a
-rhoParse p = parse p ""
+run :: Parser a -> String -> Either ParseError a
+run p = parse (p <* eof) ""
 
-run :: Parser a -> String -> a
-run p inp = res $ rhoParse p inp
-  where
-  res (Left ex) = error $ show ex
-  res (Right a) = a
+runUnsafe :: Parser a -> String -> a
+runUnsafe p = either (error . show) id . run p
+
+rhoParse :: RholangSymantics a => String -> Either ParseError (a P)
+rhoParse = run pPar

@@ -32,14 +32,16 @@ instance NameSymantics Rho where
   quo p              = Rho . Name . unRho $ p
 
 instance VariableSymantics Rho where
-  nvar v = Rho $ Var N v
-  pvar v = Rho $ Eval $ Var P v
+  nVar v = Rho $ Var N v
+  pVar v = Rho $ Eval $ Var P v
 
 instance GroundNameSymantics Rho where
-  gint x  = Rho $ Gnd N $ GInt x
-  gstr x  = Rho $ Gnd N $ GString x
-  gbool x = Rho $ Gnd N $ GBool x
-  guri x  = Rho $ Gnd N $ GUri x
+  gInt x  = Rho $ Gnd N $ GInt x
+  gStr x  = Rho $ Gnd N $ GString x
+  gBool x = Rho $ Gnd N $ GBool x
+  gUri x  = Rho $ Gnd N $ GUri x
+
+instance RholangSymantics Rho
 
 -- Substitute x for y in P `for( y <- x ) P`
 substitute :: Name -> Name -> Process -> Process
