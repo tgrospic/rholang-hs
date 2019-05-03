@@ -4,7 +4,7 @@ import System.Environment
 import Control.Monad
 import Data.List
 import System.Console.Haskeline
-import qualified Numerals2.NumeralsRepl as NumRepl
+import qualified Numerals3.NumeralsRepl as NumRepl
 import qualified RholangRepl as RhoRepl
 
 main :: IO ()
