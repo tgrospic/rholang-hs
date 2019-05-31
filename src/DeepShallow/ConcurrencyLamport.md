@@ -11,6 +11,9 @@ https://lamport.azurewebsites.net/pubs/bakery.pdf
 Time, Clocks, and the Ordering of Events in a Distributed System  
 https://lamport.azurewebsites.net/pubs/time-clocks.pdf
 
+Paxos Made Simple
+https://lamport.azurewebsites.net/pubs/paxos-simple.pdf
+
 ## Video notes
 
 Bakery algorithm  
