@@ -11,7 +11,7 @@ https://lamport.azurewebsites.net/pubs/bakery.pdf
 Time, Clocks, and the Ordering of Events in a Distributed System  
 https://lamport.azurewebsites.net/pubs/time-clocks.pdf
 
-Paxos Made Simple
+Paxos Made Simple  
 https://lamport.azurewebsites.net/pubs/paxos-simple.pdf
 
 ## Video notes
@@ -55,7 +55,7 @@ https://youtu.be/hxDXwG6h32s?t=1040
 - every property can be expressed as conjunction of safety and liveness property
   - safety   = something does not produce bad answer
   - liveness = something good eventually happens (termination, responsiveness)
-  - temporal logic provided a way to use safety properties in proving livness properties (paper)
+  - temporal logic provided a way to use safety properties in proving liveness properties (paper)
 
 Branching time & linear time (temporal logic)  
 https://youtu.be/hxDXwG6h32s?t=1289
