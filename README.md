@@ -1,8 +1,23 @@
 # Rholang in Haskell
 
+## Rholang 4b
+
+In this version, the distinction between Names and Processes are completely eliminated. There is no mention of names, only variables and they are also processes.
+
+Without _quoting_ names, the definition for _output_ becomes left recursive which is difficult to specify with parser combinators. To solve this problem non-terminals must be within braces e.g. `{a|b}!(...)`.
+
+```scala
+for( a <- 42 ) { {a!(a)}!(a) | a }
+
+// Parsed
+for( x0 <- 42 ) {
+  {x0!(x0)}!(x0) | x0
+}
+```
+
 ## Rholang 4a
 
-This is modified `Rholang 4` version without distinction between Names and Processes. For now it still has `*` nad `@` on the syntax level so the next step is to remove this distinction completely as suggested by [Joshy](https://github.com/JoshOrndorff).
+This is modified `Rholang 4` version without distinction between Names and Processes. For now it still has `*` and `@` on the syntax level so the next step is to remove this distinction completely as suggested by [Joshy](https://github.com/JoshOrndorff).
 
 ## Rholang 4
 
